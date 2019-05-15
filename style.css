@@ -9,7 +9,7 @@ div.container {
     background-color: white;
     display: grid;
     height: 100%;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1px 1fr;
     grid-template-rows: 1fr;
     padding: 10px;
     box-sizing: border-box;
@@ -44,11 +44,18 @@ div.section {
 
 div.sketch {
     border-radius: 0;
-    overflow-y: scroll;
     padding: 10px;
     margin: -10px;
     box-shadow: none;
+    overflow: hidden;
     border: none;
+}
+
+div.vsep {
+    height: calc(100% - 20px);
+    width: 1px;
+    margin-top: 10px;
+    background-color: #dddddd;
 }
 
 iframe {
@@ -58,7 +65,7 @@ iframe {
 }
 
 div.code {
-    min-height: calc(100% - 42px);
+    height: calc(100% - 40px);
 }
 
 pre ol { 
@@ -72,7 +79,7 @@ pre ol li {
 }
 
 li.L1,li.L3,li.L5,li.L7,li.L9 {
-    background-color: #fafafa !important;
+    background-color: #ffffff !important;
 }
 
 pre ol li:before { 
@@ -82,9 +89,60 @@ pre ol li:before {
 }
 
 pre.prettyprint {
+    overflow: scroll;
     border: 1px solid #dddddd !important;
     margin: 0px;
     height: 100%;
     padding: 0;
     box-sizing: border-box;
+}
+
+div.controls {
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translate(-50%);
+    padding: 10px;
+    background-color: white;
+    border-radius: 50px;
+    border: 1px solid #dddddd;
+    box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.1);
+}
+
+div.controls > button:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.1);
+    border-radius: 50px;
+    z-index: -1;
+}
+
+div.controls > button {
+    height: 45px;
+    width: 45px;
+    line-height: 8px;
+    text-align: center;
+    display:table-cell;
+    vertical-align:middle;
+    cursor: pointer;
+    font-family: "Inconsolata", monospace;
+    position: relative;
+    margin: 5px;
+    border-radius: 50px;
+    background-color: white;
+    outline: none;
+    border: 1px solid #dddddd;
+    transition: border-color 0.1s ease-in-out, background-color 0.1s ease-in-out;
+}
+
+div.controls > button:hover {
+    border-color: #bbbbbb;
+}
+
+div.controls > button:active {
+    background-color: #eeeeee;
 }

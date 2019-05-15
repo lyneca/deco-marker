@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="style.css" media="all">
     <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
     <script src="bundle.js"></script>
@@ -14,23 +15,23 @@
         <!-- </div> -->
         <div class="section sketch">
             <div class="section sketch-section code">
-                <pre class="prettyprint linenums">
-function setup() {
-    createCanvas(windowWidth, windowHeight);
-}
-
-function draw() {
-    ellipse(width/2, height/2, 50, 50);
-}
-                </pre>
+                <pre class="prettyprint linenums" id="code"></pre>
             </div>
         </div>
-            <div class="section sketch-section display" id="iframe-container">
-                <iframe id="iframe"
-                    sandbox="allow-scripts allow-pointer-lock allow-same-origin allow-popups allow-forms allow-modals"
-                    srcdoc="">
-                </iframe>
-            </div>
+        <div class="vsep"></div>
+        <div class="section sketch-section display" id="iframe-container">
+            <iframe id="iframe"
+                sandbox="allow-scripts allow-pointer-lock allow-same-origin allow-popups allow-forms allow-modals"
+                srcdoc="">
+            </iframe>
+        </div>
+    </div>
+    <div class="controls">
+        <button id="btn-prev"><i class="material-icons">skip_previous</i></button>
+        <button id="btn-play"><i class="material-icons">play_arrow</i></button>
+        <button id="btn-stop"><i class="material-icons">stop</i></button>
+        <button id="btn-full"><i class="material-icons">fullscreen</i></button>
+        <button id="btn-next"><i class="material-icons">skip_next</i></button>
     </div>
     <script>onLoad()</script>
 </body>
