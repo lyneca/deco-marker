@@ -1,169 +1,129 @@
-const HTML_HEAD = `
-<head>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.min.js'></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.dom.min.js'></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.sound.min.js'></script>
-    <style>
-        body {
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-    </style>
-</head>
-`
+/* eslint-disable no-undef */
+const iframe = document.getElementById('iframe');
+const container = document.getElementById('iframe-container');
+const code = document.getElementById('code');
+const sketch = document.getElementById('iframe-container');
+const markingDialog = document.getElementById('markingDialog');
+const buttonPrev = document.getElementById('btn-prev');
+const buttonPlay = document.getElementById('btn-play');
+const buttonStop = document.getElementById('btn-stop');
+const buttonMark = document.getElementById('btn-mark');
+const buttonFull = document.getElementById('btn-full');
+const buttonNext = document.getElementById('btn-next');
 
-function updateDisplay(text) {
-    const iframe = document.getElementById('iframe');
-    const container = document.getElementById('iframe-container');
-    const code = document.getElementById('code');
+const gradeA = document.getElementById('gradeA');
+const gradeB = document.getElementById('gradeB');
+const gradeC = document.getElementById('gradeC');
 
+const gradeThresholds = {
+    HD: 85,
+    DI: 75,
+    CR: 65,
+    PS: 50,
+    FA: 0
+}
+
+const templates = {
+    A: {
+        HD: "Criteria A HD Comment Template",
+        DI: "Criteria A DI Comment Template",
+        CR: "Criteria A CR Comment Template",
+        PS: "Criteria A PS Comment Template",
+        FA: "Criteria A FA Comment Template"
+    },
+    B: {
+        HD: "Criteria B HD Comment Template",
+        DI: "Criteria B DI Comment Template",
+        CR: "Criteria B CR Comment Template",
+        PS: "Criteria B PS Comment Template",
+        FA: "Criteria B FA Comment Template"
+    },
+    C: {
+        HD: "Criteria C HD Comment Template",
+        DI: "Criteria C DI Comment Template",
+        CR: "Criteria C CR Comment Template",
+        PS: "Criteria C PS Comment Template",
+        FA: "Criteria C FA Comment Template"
+    }
+}
+
+let markingDialogShown = false;
+
+// Refresh the display and code window
+function updateDisplay() {
     iframe.width = container.width - 20;
     iframe.height = container.height - 20;
 
-    iframe.srcdoc = `
-    <html>
-    ${HTML_HEAD}
-    <body>
-    <script>
-        ${text}
-    </script>
-    </body>
-    </html>
-    `
+    // This just works
+    iframe.contentWindow.location.href = 'extracted'
+    
+    // Set style of iframe stuff (to remove scrollbars)
+    iframe.contentDocument.body.style.margin = 0;
+    iframe.contentDocument.body.style.display = 'flex';
+    iframe.contentDocument.body.style.justifyContent = 'center';
+    iframe.contentDocument.body.style.alignItems = 'center';
 
-    code.innerHTML = text;
-    iframe.contentWindow.location.reload()
+    // Get the code from the server
+    const xhttp = new XMLHttpRequest();
+
+    xhttp.open('GET', 'extracted/mySketch.js?t=' + Math.random(), true);
+    xhttp.send();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState === 4 && this.status === 200) {
+            code.innerHTML = this.responseText;
+            // Re-style the code
+            code.classList.remove('prettyprinted');
+            PR.prettyPrint(code);
+        }
+    }
 }
+
+function prev() { }
+
+function play() {
+    updateDisplay();
+}
+
+function stop() {
+    iframe.srcdoc = '<style>body {background-color: #eeeeee;}</style><body></body>';
+}
+
+function mark() {
+    if (markingDialogShown) {
+        markingDialogShown = false;
+        markingDialog.style.opacity = 0;
+        setTimeout(() => markingDialog.style.visibility = "hidden", 100);
+    } else {
+        markingDialogShown = true;
+        markingDialog.style.visibility = "visible";
+        markingDialog.style.opacity = 1;
+    }
+}
+
+function full() {
+    iframe.requestFullscreen();
+}
+
+function next() { }
 
 window.onLoad = () => {
-    const sketch = document.getElementById('iframe-container');
-    const text = `/*
- * Particle Brush - click and drag, multitouch support
- *  ~ lyneca
- */
+    sketch.onmouseup = () => updateDisplay();
+    iframe.onfullscreenchange = () => iframe.contentWindow.location.reload();
 
-const PARTICLE_SIZE = 10;
-const FRICTION = 0.97;
-const OPACITY = 0.1
-const SPAWN_SPREAD = 2;
-const NUM_SPAWN = 4;
-
-const SPEED_CAP = 10;
-
-const DRAW_GAP = 1;
-
-const touchDifferences = []
-
-const particles = []
-
-class Particle {
-    constructor(x, y, vx, vy) {
-        this.x = x;
-        this.y = y;
-        this.lastX = x;
-        this.lastY = y;
-        this.angle = atan2(vy, vx);
-        this.speed = min(SPEED_CAP, dist(vx, vy, 0, 0));
-        this.lastSpeed = this.speed;
-    }
-
-    update() {
-        this.lastX = this.x;
-        this.lastY = this.y;
-        this.lastSpeed = this.speed;
-
-        this.speed *= FRICTION;
-
-        if (this.angle > TWO_PI) this.angle -= TWO_PI;
-        if (this.angle < 0) this.angle += TWO_PI;
-
-        this.angle += (noise(this.x / 100, this.y / 100) * TWO_PI - PI) * 0.05
-
-        this.x += cos(this.angle) * this.speed;
-        this.y += sin(this.angle) * this.speed;
-
-        if (this.speed < 1) {
-            particles.splice(particles.indexOf(this), 1)
+    // What a hack lmao
+    [gradeA, gradeB, gradeC].forEach(e => {
+        e.onchange = function() {
+            let type = this.id[this.id.length - 1];
+            document.getElementById('mark' + type).value = gradeThresholds[this.value];
+            document.getElementById('comment' + type).value = templates[type][this.value];
         }
-    }
-
-    draw() {
-        noStroke();
-        const angle = atan2(this.y - this.lastY, this.x - this.lastX);
-        const distance = dist(this.x, this.y, this.lastX, this.lastY);
-        const from = color(map(this.lastSpeed, 0, SPEED_CAP, 180, 300), 100, 100);
-        const to = color(map(this.speed, 0, SPEED_CAP, 180, 300), 100, 100);
-
-        for (let i = 0; i < distance; i += 1) {
-            fill(lerpColor(from, to, i / distance));
-            ellipse(
-                this.lastX + cos(angle) * i,
-                this.lastY + sin(angle) * i,
-                PARTICLE_SIZE
-            );
-        }
-    }
-}
-
-function makeParticles(x, y, lx, ly) {
-    for (let i = 0; i < NUM_SPAWN; i++) {
-        const p = new Particle(x, y, x - lx + random(-SPAWN_SPREAD, SPAWN_SPREAD), y - ly + random(-SPAWN_SPREAD, SPAWN_SPREAD));
-
-        particles.push(p);
-    }
-}
-
-function setup() {
-    createCanvas(windowWidth, windowHeight);
-    lastMouseX = mouseX;
-    lastMouseY = mouseY;
-    background(252);
-    frameRate(120);
-    colorMode(HSB);
-}
-
-function draw() {
-    // if (particles.length === 0) background(360, OPACITY);
-    if (touches.length > 0) {
-        touches.forEach(t => {
-            const lastX = touchDifferences[t.id].x;
-            const lastY = touchDifferences[t.id].y;
-
-            if (abs(t.x - lastX) + abs(t.y - lastY) > 0) {
-                makeParticles(t.x, t.y, lastX, lastY);
-                touchDifferences[t.id].x = t.x;
-                touchDifferences[t.id].y = t.y;
-            }
-        })
-    } else if (mouseIsPressed && abs(mouseX - lastMouseX) + abs(mouseY - lastMouseY) > 0) {
-        makeParticles(mouseX, mouseY, lastMouseX, lastMouseY)
-    }
-    lastMouseX = mouseX;
-    lastMouseY = mouseY;
-
-    particles.forEach(p => {
-        p.update();
-        p.draw();
     });
-}
 
-function touchStarted(event) {
-    const [touch] = event.changedTouches;
-
-    touchDifferences[touch.identifier] = {
-        x: touch.clientX,
-        y: touch.clientY
-    }
-}
-
-function touchEnded(event) {
-    const [touch] = event.changedTouches;
-
-    delete touchDifferences[touch.identifier];
-}
-`;
-    sketch.onmouseup = () => updateDisplay(text);
-    updateDisplay(text);
+    buttonPrev.onclick = prev;
+    buttonPlay.onclick = play;
+    buttonStop.onclick = stop;
+    buttonMark.onclick = mark;
+    buttonFull.onclick = full;
+    buttonNext.onclick = next;
+    updateDisplay();
 }

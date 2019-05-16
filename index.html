@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
     <link rel="stylesheet" href="style.css" media="all">
     <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
-    <script src="bundle.js"></script>
     <title>DECO1012 Assignment 3 Marking Site</title>
 </head>
 <body>
@@ -21,18 +20,52 @@
         <div class="vsep"></div>
         <div class="section sketch-section display" id="iframe-container">
             <iframe id="iframe"
-                sandbox="allow-scripts allow-pointer-lock allow-same-origin allow-popups allow-forms allow-modals"
-                srcdoc="">
+                sandbox="allow-scripts allow-pointer-lock allow-same-origin allow-popups allow-forms allow-modals">
             </iframe>
         </div>
     </div>
-    <div class="controls">
-        <button id="btn-prev"><i class="material-icons">skip_previous</i></button>
-        <button id="btn-play"><i class="material-icons">play_arrow</i></button>
-        <button id="btn-stop"><i class="material-icons">stop</i></button>
-        <button id="btn-full"><i class="material-icons">fullscreen</i></button>
-        <button id="btn-next"><i class="material-icons">skip_next</i></button>
+    <div id="markingDialog">
+        <h2>Marking</h2>
+        <div class="criteria">
+            <div>Criteria</div>
+            <div>A</div>
+            <div>B</div>
+            <div>C</div>
+            <div>Grade</div>
+            <select class="mark-grade" tabindex=1 type="number" id="gradeA" name="gradeA">
+                <option>HD</option><option>DI</option><option>CR</option><option>PS</option><option>FA</option>
+            </select>
+            <select class="mark-grade" tabindex=4 type="number" id="gradeB" name="gradeB">
+                <option>HD</option><option>DI</option><option>CR</option><option>PS</option><option>FA</option>
+            </select>
+            <select class="mark-grade" tabindex=7 type="number" id="gradeC" name="gradeC">
+                <option>HD</option><option>DI</option><option>CR</option><option>PS</option><option>FA</option>
+            </select>
+            <div>Mark</div>
+            <input class="mark-input" tabindex=2 type="number" min=0 max=100 id="markA" name="markA">
+            <input class="mark-input" tabindex=5 type="number" min=0 max=100 id="markB" name="markB">
+            <input class="mark-input" tabindex=8 type="number" min=0 max=100 id="markC" name="markC">
+            <div>Comment</div>
+            <textarea class="mark-comment" tabindex=3 type="text" id="commentA" name="commentA"></textarea>
+            <textarea class="mark-comment" tabindex=6 type="text" id="commentB" name="commentB"></textarea>
+            <textarea class="mark-comment" tabindex=9 type="text" id="commentC" name="commentC"></textarea>
+        </div>
+        <div>
+            <div class="mark-checkbox">
+                <input type="checkbox" tabindex=10 id="override" name="override">
+                <label for="override">Override Late Penalty</label>
+            </div>
+        </div>
     </div>
+    <div class="controls">
+        <button id="btn-prev" tabindex=-1><i class="material-icons-outlined">skip_previous</i></button>
+        <button id="btn-play" tabindex=-1><i class="material-icons-outlined">play_arrow</i></button>
+        <button id="btn-stop" tabindex=-1><i class="material-icons-outlined">stop</i></button>
+        <button id="btn-mark" tabindex=-1><i class="material-icons-outlined">assignment</i></button>
+        <button id="btn-full" tabindex=-1><i class="material-icons-outlined">fullscreen</i></button>
+        <button id="btn-next" tabindex=-1><i class="material-icons-outlined">skip_next</i></button>
+    </div>
+    <script src="bundle.js"></script>
     <script>onLoad()</script>
 </body>
 </html>

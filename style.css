@@ -1,4 +1,5 @@
 body, html {
+    font-family: monospace;
     background-color: #dddddd;
     height: 100%;
     padding: 0;
@@ -145,4 +146,65 @@ div.controls > button:hover {
 
 div.controls > button:active {
     background-color: #eeeeee;
+}
+
+#markingDialog {
+    background-color: white;
+    border: 1px solid #dddddd;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.1);
+    width: 60%;
+    height: 60%;
+    left: 50%;
+    position: fixed;
+    top: 10%;
+    transform: translate(-50%);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.1s ease-in-out;
+}
+
+.criteria {
+    display: grid;
+    grid-template-columns: 0.15fr 0.15fr 0.15fr 1fr;
+    grid-template-rows: 30px 50px 50px 50px;
+    grid-auto-flow: column;
+    align-items: center;
+    justify-items: center;
+}
+
+.mark-input {
+    display: block;
+    border: none;
+    border-bottom: 1px solid #dddddd;
+    transition: outline 0.1s ease-in-out, border-color 0.1s ease-in-out;
+    padding: 5px;
+}
+
+.mark-input:focus {
+    outline: none;
+    border-color: #bbbbbb;
+}
+
+#markingDialog > h2 {
+    grid-column: span 4;
+    font-weight: normal;
+    font-size: 50px;
+    color: #bbbbbb;
+    width: 100%;
+    text-align: center;
+    margin: 0;
+}
+
+.mark-comment {
+    height: calc(100% - 10px);
+    width: calc(100% - 10px);
+    margin: 5px;
+    resize: none;
+    box-sizing: border-box;
+}
+
+.mark-checkbox {
+
 }
