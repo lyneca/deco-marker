@@ -155,7 +155,7 @@ div.controls > button:active {
     padding: 10px;
     box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.1);
     width: 60%;
-    height: 60%;
+    height: 70%;
     left: 50%;
     position: fixed;
     top: 10%;
@@ -163,23 +163,54 @@ div.controls > button:active {
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.1s ease-in-out;
+    display: flex;
+    flex-direction: column;
 }
 
 .criteria {
     display: grid;
-    grid-template-columns: 0.15fr 0.15fr 0.15fr 1fr;
+    grid-template-columns: 0.05fr 0.15fr 0.15fr 1fr;
     grid-template-rows: 30px 50px 50px 50px;
     grid-auto-flow: column;
     align-items: center;
     justify-items: center;
 }
 
-.mark-input {
-    display: block;
-    border: none;
-    border-bottom: 1px solid #dddddd;
-    transition: outline 0.1s ease-in-out, border-color 0.1s ease-in-out;
+.submission-options {
+    display: grid;
+    grid-template-columns: 3fr 200px 50px;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    align-items: center;
+    justify-items: end;
+    grid-gap: 10px;
+    margin: 10px;
+    flex-grow: 1;
+}
+
+input[type="submit"] {
+    height: calc(100% - 10px);
+    width: calc(100% - 10px);
+    background: white;
+    margin: 5px;
+    border: 1px solid #bbbbbb;
     padding: 5px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    transition: outline 0.1s ease-in-out, border-color 0.1s ease-in-out;
+    grid-column: span 2;
+    cursor: pointer;
+}
+
+input[type="number"] {
+    height: calc(100% - 10px);
+    width: calc(100% - 10px);
+    background: white;
+    margin: 5px;
+    border: 1px solid #bbbbbb;
+    padding: 5px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    transition: outline 0.1s ease-in-out, border-color 0.1s ease-in-out;
 }
 
 .mark-input:focus {
@@ -194,17 +225,57 @@ div.controls > button:active {
     color: #bbbbbb;
     width: 100%;
     text-align: center;
-    margin: 0;
+    margin: 20px;
 }
 
 .mark-comment {
     height: calc(100% - 10px);
     width: calc(100% - 10px);
     margin: 5px;
+    padding: 5px;
     resize: none;
     box-sizing: border-box;
+    border-radius: 5px;
 }
 
 .mark-checkbox {
+    justify-self: center;
+}
 
+.mark-grade {
+    height: calc(100% - 10px);
+    width: calc(100% - 10px);
+    background: white;
+    margin: 5px;
+    padding: 5px;
+    box-sizing: border-box;
+    border-radius: 5px;
+}
+
+#mark-final {
+    justify-self: center;
+}
+
+#commentPreview {
+    height: calc(100% - 10px);
+    width: calc(100% - 10px);
+    margin: 5px;
+    padding: 5px;
+    resize: none;
+    box-sizing: border-box;
+    border-radius: 5px;
+    grid-row: 1 / -1;
+}
+
+.option-HD { background-color: #ddffdd; }
+.option-DI { background-color: #eeffdd; }
+.option-CR { background-color: #ffffdd; }
+.option-PS { background-color: #ffeedd; }
+.option-FA { background-color: #ffdddd; }
+
+input, textarea, select {
+    transition: border-color 0.1s ease-in-out;
+}
+input:hover, textarea:hover, select:hover {
+    border-color: #888888;
 }

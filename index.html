@@ -25,21 +25,24 @@
         </div>
     </div>
     <div id="markingDialog">
-        <h2>Marking</h2>
+        <h2>Marks for Luke Tuthill</h2>
         <div class="criteria">
-            <div>Criteria</div>
+            <div></div>
             <div>A</div>
             <div>B</div>
             <div>C</div>
             <div>Grade</div>
             <select class="mark-grade" tabindex=1 type="number" id="gradeA" name="gradeA">
-                <option>HD</option><option>DI</option><option>CR</option><option>PS</option><option>FA</option>
+                <option disabled selected value> --- </option>
+                <option class="grade-option option-HD">HD</option><option class="grade-option option-DI">DI</option><option class="grade-option option-CR">CR</option><option class="grade-option option-PS">PS</option><option class="grade-option option-FA">FA</option>
             </select>
             <select class="mark-grade" tabindex=4 type="number" id="gradeB" name="gradeB">
-                <option>HD</option><option>DI</option><option>CR</option><option>PS</option><option>FA</option>
+                <option disabled selected value> --- </option>
+                <option class="grade-option option-HD">HD</option><option class="grade-option option-DI">DI</option><option class="grade-option option-CR">CR</option><option class="grade-option option-PS">PS</option><option class="grade-option option-FA">FA</option>
             </select>
             <select class="mark-grade" tabindex=7 type="number" id="gradeC" name="gradeC">
-                <option>HD</option><option>DI</option><option>CR</option><option>PS</option><option>FA</option>
+                <option disabled selected value> --- </option>
+                <option class="grade-option option-HD">HD</option><option class="grade-option option-DI">DI</option><option class="grade-option option-CR">CR</option><option class="grade-option option-PS">PS</option><option class="grade-option option-FA">FA</option>
             </select>
             <div>Mark</div>
             <input class="mark-input" tabindex=2 type="number" min=0 max=100 id="markA" name="markA">
@@ -50,11 +53,16 @@
             <textarea class="mark-comment" tabindex=6 type="text" id="commentB" name="commentB"></textarea>
             <textarea class="mark-comment" tabindex=9 type="text" id="commentC" name="commentC"></textarea>
         </div>
-        <div>
-            <div class="mark-checkbox">
-                <input type="checkbox" tabindex=10 id="override" name="override">
-                <label for="override">Override Late Penalty</label>
-            </div>
+        <div class="submission-options">
+            <textarea id="commentPreview"></textarea>
+            <label for="mark-late">Days Late</label>
+            <input id="mark-late" type="number" name="mark-late">
+            <label for="override">Override Late Penalty</label>
+            <input type="checkbox" tabindex=10 id="override" name="override" class="mark-checkbox">
+            <label>Final Grade</label>
+            <div id="mark-final"></div>
+            <input type="submit">
+
         </div>
     </div>
     <div class="controls">

@@ -15,6 +15,16 @@ const gradeA = document.getElementById('gradeA');
 const gradeB = document.getElementById('gradeB');
 const gradeC = document.getElementById('gradeC');
 
+const commentA = document.getElementById('commentA');
+const commentB = document.getElementById('commentB');
+const commentC = document.getElementById('commentC');
+
+const daysLate = document.getElementById('mark-late');
+const override = document.getElementById('override');
+const finalMark = document.getElementById('mark-final');
+
+const commentPreview = document.getElementById('commentPreview');
+
 const gradeThresholds = {
     HD: 85,
     DI: 75,
@@ -106,6 +116,25 @@ function full() {
 
 function next() { }
 
+function updatePreview() {
+    console.log([commentA.value, commentB.value, commentC.value]);
+    console.log([commentA.value, commentB.value, commentC.value].filter(x => x.trim() !== "").join('\n\n'));
+    commentPreview.value = [commentA.value, commentB.value, commentC.value].filter(x => x.trim() !== "").join('\n\n');
+}
+
+function calculateMarks() {
+    let num = Math.round((parseInt(markA.value, 10) + parseInt(markB.value, 10) + parseInt(markC.value, 10)) / 3) - (override.checked ? 0 : 5 * daysLate.value)
+
+    if (num < 0) num = 0;
+    if (num > 100) num = 100;
+    return num;
+}
+
+function updateMarks() {
+    const num = calculateMarks();
+    if (!isNaN(num)) finalMark.innerHTML = num;
+}
+
 window.onLoad = () => {
     sketch.onmouseup = () => updateDisplay();
     iframe.onfullscreenchange = () => iframe.contentWindow.location.reload();
@@ -113,10 +142,21 @@ window.onLoad = () => {
     // What a hack lmao
     [gradeA, gradeB, gradeC].forEach(e => {
         e.onchange = function() {
-            let type = this.id[this.id.length - 1];
+            const type = this.id[this.id.length - 1];
+            this.style.backgroundColor = getComputedStyle(this.children[this.selectedIndex]).backgroundColor;
             document.getElementById('mark' + type).value = gradeThresholds[this.value];
             document.getElementById('comment' + type).value = templates[type][this.value];
+            updatePreview();
+            updateMarks();
         }
+    });
+
+    [commentA, commentB, commentC].forEach(e => {
+        e.oninput = updatePreview;
+    });
+
+    [markA, markB, markC, daysLate, override].forEach(e => {
+        e.oninput = updateMarks;
     });
 
     buttonPrev.onclick = prev;
