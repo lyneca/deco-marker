@@ -1,29 +1,42 @@
 /* eslint-disable no-undef */
-const iframe = document.getElementById('iframe');
-const container = document.getElementById('iframe-container');
-const code = document.getElementById('code');
-const sketch = document.getElementById('iframe-container');
-const markingDialog = document.getElementById('markingDialog');
-const buttonPrev = document.getElementById('btn-prev');
-const buttonPlay = document.getElementById('btn-play');
-const buttonStop = document.getElementById('btn-stop');
-const buttonMark = document.getElementById('btn-mark');
-const buttonFull = document.getElementById('btn-full');
-const buttonNext = document.getElementById('btn-next');
 
-const gradeA = document.getElementById('gradeA');
-const gradeB = document.getElementById('gradeB');
-const gradeC = document.getElementById('gradeC');
+function getElement(id) { return document.getElementById(id); }
 
-const commentA = document.getElementById('commentA');
-const commentB = document.getElementById('commentB');
-const commentC = document.getElementById('commentC');
+const iframe = getElement('iframe');
+const container = getElement('iframe-container');
+const code = getElement('code');
+const sketch = getElement('iframe-container');
+const markingDialog = getElement('markingDialog');
+// const buttonPrev = getElement('btn-prev');
+const buttonPlay = getElement('btn-play');
+const buttonStop = getElement('btn-stop');
+const buttonMark = getElement('btn-mark');
+const buttonFull = getElement('btn-full');
+const buttonHome = getElement('btn-home');
 
-const daysLate = document.getElementById('mark-late');
-const override = document.getElementById('override');
-const finalMark = document.getElementById('mark-final');
+const sid = parseInt(getElement('sid').innerHTML)
 
-const commentPreview = document.getElementById('commentPreview');
+console.log(sid)
+
+const markA = getElement('markA');
+const markB = getElement('markB');
+const markC = getElement('markC');
+
+const gradeA = getElement('gradeA');
+const gradeB = getElement('gradeB');
+const gradeC = getElement('gradeC');
+
+const commentA = getElement('commentA');
+const commentB = getElement('commentB');
+const commentC = getElement('commentC');
+
+const daysLate = getElement('mark-late');
+const override = getElement('override');
+const finalMark = getElement('mark-final');
+
+const submit = getElement('submit');
+
+const commentPreview = getElement('commentPreview');
 
 const gradeThresholds = {
     HD: 85,
@@ -32,6 +45,9 @@ const gradeThresholds = {
     PS: 50,
     FA: 0
 }
+
+// EDIT ME!
+// =============
 
 const templates = {
     A: {
@@ -57,6 +73,18 @@ const templates = {
     }
 }
 
+// =============
+
+function htmlEscape(str) {
+    return str
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+}
+
+
 let markingDialogShown = false;
 
 // Refresh the display and code window
@@ -65,7 +93,7 @@ function updateDisplay() {
     iframe.height = container.height - 20;
 
     // This just works
-    iframe.contentWindow.location.href = 'extracted'
+    iframe.contentWindow.location.href = '/index.html'
     
     // Set style of iframe stuff (to remove scrollbars)
     iframe.contentDocument.body.style.margin = 0;
@@ -76,11 +104,11 @@ function updateDisplay() {
     // Get the code from the server
     const xhttp = new XMLHttpRequest();
 
-    xhttp.open('GET', 'extracted/mySketch.js?t=' + Math.random(), true);
+    xhttp.open('GET', '/mySketch.js', true);
     xhttp.send();
     xhttp.onreadystatechange = function() {
         if (this.readyState === 4 && this.status === 200) {
-            code.innerHTML = this.responseText;
+            code.innerHTML = htmlEscape(this.responseText);
             // Re-style the code
             code.classList.remove('prettyprinted');
             PR.prettyPrint(code);
@@ -88,7 +116,9 @@ function updateDisplay() {
     }
 }
 
-function prev() { }
+function home() {
+    window.location.href = '/';
+}
 
 function play() {
     updateDisplay();
@@ -114,19 +144,16 @@ function full() {
     iframe.requestFullscreen();
 }
 
-function next() { }
-
 function updatePreview() {
-    console.log([commentA.value, commentB.value, commentC.value]);
-    console.log([commentA.value, commentB.value, commentC.value].filter(x => x.trim() !== "").join('\n\n'));
     commentPreview.value = [commentA.value, commentB.value, commentC.value].filter(x => x.trim() !== "").join('\n\n');
 }
 
 function calculateMarks() {
-    let num = Math.round((parseInt(markA.value, 10) + parseInt(markB.value, 10) + parseInt(markC.value, 10)) / 3) - (override.checked ? 0 : 5 * daysLate.value)
+    let num = Math.round(parseInt(markA.value, 10) + parseInt(markB.value, 10) + parseInt(markC.value, 10))
+    if (daysLate && override) num -= override.checked ? 0 : 5 * daysLate.value;
 
     if (num < 0) num = 0;
-    if (num > 100) num = 100;
+    if (num > 300) num = 300;
     return num;
 }
 
@@ -134,6 +161,41 @@ function updateMarks() {
     const num = calculateMarks();
     if (!isNaN(num)) finalMark.innerHTML = num;
 }
+
+function sendToServer(sid, rubric, comment, grade) {
+    const xhttp = new XMLHttpRequest();
+
+    xhttp.open("POST", "/grade", true)
+    xhttp.setRequestHeader("Content-Type", `application/json`);
+    xhttp.send(JSON.stringify({
+        sid: sid,
+        rubric: rubric,
+        comment: comment,
+        mark: grade
+    }));
+    console.log("sent");
+}
+
+// Alex: 450157028
+
+// Daisuke
+function sendMarkToCanvas() {
+    console.log("sending...");
+    console.log(markA.value)
+    console.log(markB.value)
+    console.log(markC.value)
+    sendToServer(
+        sid,
+        {
+            A: parseInt(markA.value),
+            B: parseInt(markB.value),
+            C: parseInt(markC.value)
+        },
+        commentPreview.value,
+        finalMark.innerHTML
+    );
+}
+
 
 window.onLoad = () => {
     sketch.onmouseup = () => updateDisplay();
@@ -144,8 +206,8 @@ window.onLoad = () => {
         e.onchange = function() {
             const type = this.id[this.id.length - 1];
             this.style.backgroundColor = getComputedStyle(this.children[this.selectedIndex]).backgroundColor;
-            document.getElementById('mark' + type).value = gradeThresholds[this.value];
-            document.getElementById('comment' + type).value = templates[type][this.value];
+            getElement('mark' + type).value = gradeThresholds[this.value];
+            getElement('comment' + type).value = templates[type][this.value];
             updatePreview();
             updateMarks();
         }
@@ -155,15 +217,20 @@ window.onLoad = () => {
         e.oninput = updatePreview;
     });
 
-    [markA, markB, markC, daysLate, override].forEach(e => {
+    [markA, markB, markC, ].forEach(e => {
         e.oninput = updateMarks;
     });
+    [daysLate, override].forEach(e => {
+        if (e) e.oninput = updateMarks;
+    });
 
-    buttonPrev.onclick = prev;
+    // buttonPrev.onclick = prev;
     buttonPlay.onclick = play;
     buttonStop.onclick = stop;
     buttonMark.onclick = mark;
     buttonFull.onclick = full;
-    buttonNext.onclick = next;
+    buttonHome.onclick = home;
+    // buttonNext.onclick = next;
+    submit.onclick = sendMarkToCanvas;
     updateDisplay();
 }

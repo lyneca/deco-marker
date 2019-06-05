@@ -1,6 +1,6 @@
 body, html {
     font-family: monospace;
-    background-color: #dddddd;
+    background-color: #ffffff;
     height: 100%;
     padding: 0;
     margin: 0;
@@ -278,4 +278,53 @@ input, textarea, select {
 }
 input:hover, textarea:hover, select:hover {
     border-color: #888888;
+}
+
+div.student-container {
+    width: 60%;
+    padding-top: 50px;
+    margin: auto;
+}
+
+span#sid {
+    display: none;
+}
+
+.student {
+    border: 1px solid #dddddd;
+    display: grid;
+    grid-template-columns: 2fr 2fr 6fr 1fr;
+    grid-template-rows: 1fr;
+    transition: border-color 0.2s ease-in-out;
+    cursor: pointer;
+    user-select: none;
+}
+
+a:link, a:visited, a:active {
+    text-decoration: inherit;
+    color: inherit;
+}
+
+.student:hover {
+    border-color: #999999;
+}
+
+.student > span:not(first-of-type) {
+    border-left: 1px solid #dddddd;
+}
+
+.heading {
+    font-weight: bold;
+}
+
+.field {
+    padding: 10px;
+}
+
+.field.green {
+    background-color: #F0FFF0;
+}
+
+.field.red {
+    background-color: #FFF0F0;
 }

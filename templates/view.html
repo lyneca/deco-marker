@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
-    <link rel="stylesheet" href="style.css" media="all">
+    <link rel="stylesheet" href="static/style.css" media="all">
     <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
     <title>DECO1012 Assignment 3 Marking Site</title>
 </head>
@@ -25,7 +25,8 @@
         </div>
     </div>
     <div id="markingDialog">
-        <h2>Marks for Luke Tuthill</h2>
+        <h2>Marks for {{name}}</h2>
+        <span id="sid">{{sid}}</span>
         <div class="criteria">
             <div></div>
             <div>A</div>
@@ -55,25 +56,34 @@
         </div>
         <div class="submission-options">
             <textarea id="commentPreview"></textarea>
-            <label for="mark-late">Days Late</label>
-            <input id="mark-late" type="number" name="mark-late">
-            <label for="override">Override Late Penalty</label>
-            <input type="checkbox" tabindex=10 id="override" name="override" class="mark-checkbox">
+            {% if late %}
+                <label for="mark-late">Days Late</label>
+                <input id="mark-late" type="number" name="mark-late">
+                <label for="override">Override Late Penalty</label>
+                <input type="checkbox" tabindex=10 id="override" name="override" class="mark-checkbox">
+            {% endif %}
             <label>Final Grade</label>
             <div id="mark-final"></div>
-            <input type="submit">
+            <button id="submit" type="submit">Submit</button>
 
         </div>
     </div>
     <div class="controls">
-        <button id="btn-prev" tabindex=-1><i class="material-icons-outlined">skip_previous</i></button>
+        <!--button id="btn-prev" tabindex=-1
+            onclick="window.location.href='/{{next_sid}}'"><i
+            class="material-icons-outlined">skip_previous</i></button-->
+        <button id="btn-home" tabindex=-1><i class="material-icons-outlined">home</i></button>
         <button id="btn-play" tabindex=-1><i class="material-icons-outlined">play_arrow</i></button>
         <button id="btn-stop" tabindex=-1><i class="material-icons-outlined">stop</i></button>
         <button id="btn-mark" tabindex=-1><i class="material-icons-outlined">assignment</i></button>
         <button id="btn-full" tabindex=-1><i class="material-icons-outlined">fullscreen</i></button>
-        <button id="btn-next" tabindex=-1><i class="material-icons-outlined">skip_next</i></button>
+        <!--button id="btn-next" tabindex=-1
+            onclick="window.location.href='/{{next_sid}}'"><i
+            class="material-icons-outlined">skip_next</i></button-->
     </div>
-    <script src="bundle.js"></script>
+    <!-- <script src="bundle.js"></script> -->
+    <script src="static/index.js"></script>
+    <script src="static/api.js"></script>
     <script>onLoad()</script>
 </body>
 </html>

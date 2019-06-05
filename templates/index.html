@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <link rel="stylesheet" href="static/style.css" media="all">
+    <title>DECO1012 Assignment 3 Marking Site</title>
+</head>
+<body>
+    <div class="student-container">
+            <div class="student">
+                <span class="heading field">Unikey</span>
+                <span class="heading field">SID</span>
+                <span class="heading field">Name</span>
+                <span class="heading field">Late?</span>
+            </div>
+        {% for id in student_ids %}
+            {% set student = students[id] %}
+            <a href="{{ id }}"><div class="student">
+                <span class="field">{{ student.unikey }}</span>
+                <span class="field">{{ student.sid }}</span>
+                <span class="field">{{ student.name }}</span>
+                {% if student.late %}
+                    <span class="field red">Yes</span>
+                {% else %}
+                    <span class="field green">No</span>
+                {% endif %}
+            </div></a>
+        {% endfor %}
+    </div>
+</body>
+</html>
