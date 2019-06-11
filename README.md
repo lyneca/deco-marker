@@ -46,6 +46,14 @@ It also requires the following files:
   [here](https://canvas.instructure.com/doc/api/file.oauth.html#manual-token-generation) and paste it into this file.
 - `users`: A mapping of user IDs to SIDs, provided
 
+### Canvas to Sheets
+
+For this script to run, you need the following:
+
+- `users`: Same as above
+- `allocations`: A mapping of `SID|ID`, where `SID` is a student ID and `ID` is
+  the Canvas ID of a marker assigned to them.
+
 ## Usage
 
 ```bash
