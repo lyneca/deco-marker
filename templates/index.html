@@ -16,16 +16,23 @@
             </div>
         {% for id in student_ids %}
             {% set student = students[id] %}
+            {% if student.submissions != None %}
             <a href="{{ id }}"><div class="student">
-                <span class="field">{{ student.unikey }}</span>
-                <span class="field">{{ student.sid }}</span>
-                <span class="field">{{ student.name }}</span>
-                {% if student.late %}
-                    <span class="field red">Yes</span>
-                {% else %}
-                    <span class="field green">No</span>
-                {% endif %}
-            </div></a>
+            {% else %}
+            <div class="student gray">
+            {% endif %}
+                    <span class="field">{{ student.unikey }}</span>
+                    <span class="field">{{ student.sid }}</span>
+                    <span class="field">{{ student.name }}</span>
+                    {% if student.late %}
+                        <span class="field red">Yes</span>
+                    {% else %}
+                        <span class="field green">No</span>
+                    {% endif %}
+                </div>
+            {% if student.submissions != None %}
+            </a>
+            {% endif %}
         {% endfor %}
     </div>
 </body>

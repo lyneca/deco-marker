@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template, url_for, send_file, abort, make_response
 import requests as req
 from pprint import pprint
+from urllib.parse import quote
 import os
 import re
 
@@ -48,11 +49,14 @@ def view(sid):
 
     return render_template('view.html',
                            sid=current_user['sid'],
+                           unikey=current_user['unikey'],
                            name=current_user['name'],
                            late=current_user['late'])
 
 @app.route('/mySketch.js')
 def get_sketch():
+    if current_user['latest_submission'] is None:
+        return ""
     if os.path.exists(f"extracted/{current_user['latest_submission']}/mySketch.js"):
         return nocache(send_file(f"extracted/{current_user['latest_submission']}/mySketch.js"))
     else:
@@ -66,6 +70,8 @@ def extracted_index():
 @app.route('/<path:path>')
 def static_proxy(path):
     if path != 'favicon.ico':
+        if current_user['latest_submission'] is None:
+            return ""
         return nocache(send_file(f"extracted/{current_user['latest_submission']}/{path}"))
     abort(404);
 
@@ -78,6 +84,7 @@ def index():
 
 def send_assignment(sid, rubric, comment, mark):
     print(sid, rubric, comment, mark)
+    comment = quote(comment)
     print("Sending to",
           f'{BASE_URL}/courses/{COURSE}/assignments/{ASSIGNMENT}/submissions/sis_user_id:{sid}')
     r = req.put(
@@ -88,18 +95,24 @@ def send_assignment(sid, rubric, comment, mark):
               f'&rubric_assessment[{CRITERIA[1]}][points]={rubric["B"]}'
               f'&rubric_assessment[{CRITERIA[2]}][points]={rubric["C"]}'),
         headers=HEADERS).json()
+    print(mark, rubric["A"], rubric["B"], rubric["C"])
+    if mark != rubric["A"] + rubric["B"] + rubric["C"]:
+        r = req.put(
+            f'{BASE_URL}/courses/{COURSE}/assignments/{ASSIGNMENT}/submissions/sis_user_id:{sid}',
+            data=(f'submission[posted_grade]={mark}'),
+            headers=HEADERS).json()
 
 def get_user_id(filename):
-    match = re.match(r'^\w+_(late_)?(\d+)_(\d+).+$', filename)
+    match = re.match(r'^\w+?_(late_)?(\d+)_(\d+).+$', filename)
     if match:
         return int(match.group(2))
 
-    match = re.match(r'^\w+_(late_)?(\d+)_text.+$', filename)
+    match = re.match(r'^\w+?_(late_)?(\d+)_text.+$', filename)
     if match:
         return int(match.group(2))
 
 def get_submission_id(filename):
-    match = re.match(r'^\w+_(late_)?(\d+)_(\d+).+$', filename)
+    match = re.match(r'^\w+?_(late_)?(\d+)_(\d+).+$', filename)
     if match:
         return int(match.group(3))
     return 0
@@ -114,6 +127,11 @@ def get_sketch_path(filename):
             continue;
         if 'index.html' in os.listdir(f'extracted/{filename}/{f}'):
             return f'{filename}/{f}'
+        for s in os.listdir(f'extracted/{filename}/{f}'):
+            if not os.path.isdir(f'extracted/{filename}/{f}/{s}'):
+                continue;
+            if 'index.html' in os.listdir(f'extracted/{filename}/{f}/{s}'):
+                return f'{filename}/{f}/{s}'
     return ''
 
 def get_users():
@@ -132,9 +150,9 @@ if __name__ == '__main__':
     for f in files:
         ids[get_user_id(f)][get_submission_id(f)] = get_sketch_path(f)
     for user in get_users():
+        if sids and int(user[1]) not in sids:
+            continue
         if user[0] in ids:
-            if sids and int(user[1]) not in sids:
-                continue
             users[user[0]] = {
                 'name': user[3],
                 'unikey': user[2],
@@ -143,5 +161,15 @@ if __name__ == '__main__':
                 'sid': int(user[1]),
             }
             users[user[0]]['late'] = ('_late_' in users[user[0]]['latest_submission'])
+        else:
+            users[user[0]] = {
+                'name': user[3],
+                'unikey': user[2],
+                'submissions': None,
+                'latest_submission': None,
+                'sid': int(user[1]),
+            }
+    print(len(users))
     #  app.run(ssl_context='adhoc')
-    app.run()
+    app.run(ssl_context='adhoc', host="0.0.0.0")
+

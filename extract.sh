@@ -11,3 +11,5 @@ done
 
 mkdir -p pdfs
 mv zips/*.pdf pdfs
+
+find extracted -name "*.zip" | while read filename; do unzip -o -d "`dirname "$filename"`" "$filename"; done;

@@ -51,25 +51,25 @@ const gradeThresholds = {
 
 const templates = {
     A: {
-        HD: "Criteria A HD Comment Template",
-        DI: "Criteria A DI Comment Template",
-        CR: "Criteria A CR Comment Template",
-        PS: "Criteria A PS Comment Template",
-        FA: "Criteria A FA Comment Template"
+        HD: "For Criteria A, you've done extremely well in showing a high level of programming proficiency.",
+        DI: "For Criteria A, you've done very well in showing a great level of programming proficiency.",
+        CR: "For Criteria A, you've done well in showing a good level of programming proficiency.",
+        PS: "For Criteria A, you've done a good job of showing some programming proficiency.",
+        FA: "You have not shown satisfactory programming proficiency in Criteria A."
     },
     B: {
-        HD: "Criteria B HD Comment Template",
-        DI: "Criteria B DI Comment Template",
-        CR: "Criteria B CR Comment Template",
-        PS: "Criteria B PS Comment Template",
-        FA: "Criteria B FA Comment Template"
+        HD: "For Criteria B, you have created an excellent work with interesting and high-quality visual design, and clear interaction that is obvious to the user.",
+        DI: "For Criteria B, you have created a high-quality and interesting sketch with well-considered interaction and great visual design.",
+        CR: "For Criteria B, you have created a sketch with mostly well-considered interaction and good visual design.",
+        PS: "For Criteria B, you have created a satisfactory sketch with some consideration put into your interaction, along with decent visual design.",
+        FA: "For Criteria B, you have not created an adequate design."
     },
     C: {
-        HD: "Criteria C HD Comment Template",
-        DI: "Criteria C DI Comment Template",
-        CR: "Criteria C CR Comment Template",
-        PS: "Criteria C PS Comment Template",
-        FA: "Criteria C FA Comment Template"
+        HD: "For Criteria C, you've shown an excellent understanding of topics discussed in class, and your report is formatted to an exceptional level of quality. Well done!",
+        DI: "For Criteria C, you've shown a good understanding of topics discussed in class, and you have submitted a well-formatted and aesthetic report.",
+        CR: "For Criteria C, you've shown decent understanding of topics discussed in class, and submitted a well-formatted and good-quality report.",
+        PS: "For Criteria C, you've shown some understanding of the topics discussed in class, and submitted a report with a satisfactory level of quality.",
+        FA: "For Criteria C, you have not shown adequate understanding of the topics discussed in class, and your report is poorly presented and formatted."
     }
 }
 
@@ -144,13 +144,25 @@ function full() {
     iframe.requestFullscreen();
 }
 
+function getLateWords() {
+    let d;
+    if (daysLate && override) d = override.checked ? 0 : daysLate.value;
+    if (d) {
+        return `${d} day${d === '1' ? '' : 's'} late (-${d * 5}%)`;
+    }
+    return ''
+}
+
 function updatePreview() {
-    commentPreview.value = [commentA.value, commentB.value, commentC.value].filter(x => x.trim() !== "").join('\n\n');
+    commentPreview.value = [commentA.value, commentB.value, commentC.value, getLateWords()]
+        .filter(x => x.trim() !== "")
+        .join('\n\n')
+        .trim();
 }
 
 function calculateMarks() {
     let num = Math.round(parseInt(markA.value, 10) + parseInt(markB.value, 10) + parseInt(markC.value, 10))
-    if (daysLate && override) num -= override.checked ? 0 : 5 * daysLate.value;
+    if (daysLate && override) num -= override.checked ? 0 : 15 * daysLate.value;
 
     if (num < 0) num = 0;
     if (num > 300) num = 300;
@@ -217,11 +229,14 @@ window.onLoad = () => {
         e.oninput = updatePreview;
     });
 
-    [markA, markB, markC, ].forEach(e => {
+    [markA, markB, markC].forEach(e => {
         e.oninput = updateMarks;
     });
     [daysLate, override].forEach(e => {
-        if (e) e.oninput = updateMarks;
+        if (e) e.oninput = _ => {
+            updateMarks();
+            updatePreview();
+        };
     });
 
     // buttonPrev.onclick = prev;

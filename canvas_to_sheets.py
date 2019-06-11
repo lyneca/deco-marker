@@ -55,7 +55,6 @@ def append_row(student):
     crit_b = ""
     crit_c = ""
     if "rubric_assessment" in student and "points" in student["rubric_assessment"][CRITERIA[0]]:
-        print(student)
         crit_a = student["rubric_assessment"][CRITERIA[0]]["points"]
         crit_b = student["rubric_assessment"][CRITERIA[1]]["points"]
         crit_c = student["rubric_assessment"][CRITERIA[2]]["points"]
@@ -92,8 +91,6 @@ with open('allocations') as f:
         allocations[int(s[0])] = int(s[1])
 
 users = get_users()
-
-#  pprint(get_student(137070))
 
 test = {
     "user_id": 137070,

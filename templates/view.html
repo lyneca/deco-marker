@@ -19,14 +19,16 @@
         </div>
         <div class="vsep"></div>
         <div class="section sketch-section display" id="iframe-container">
-            <iframe id="iframe"
-                sandbox="allow-scripts allow-pointer-lock allow-same-origin allow-popups allow-forms allow-modals">
-            </iframe>
+            <iframe id="iframe"></iframe>
         </div>
     </div>
     <div id="markingDialog">
-        <h2>Marks for {{name}}</h2>
-        <span id="sid">{{sid}}</span>
+        <div class="title">
+            <h2>{{name}}</h2>
+            <div id="sid">{{sid}}</div>
+            /
+            <div id="unikey">{{unikey}}</div>
+        </div>
         <div class="criteria">
             <div></div>
             <div>A</div>

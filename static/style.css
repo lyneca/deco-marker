@@ -218,7 +218,7 @@ input[type="number"] {
     border-color: #bbbbbb;
 }
 
-#markingDialog > h2 {
+#markingDialog > div > h2 {
     grid-column: span 4;
     font-weight: normal;
     font-size: 50px;
@@ -286,12 +286,21 @@ div.student-container {
     margin: auto;
 }
 
-span#sid {
-    display: none;
+div.title {
+    text-align: center;
+    color: #bbbbbb;
+}
+
+div#sid {
+    display: inline-block;
+}
+
+div#unikey {
+    display: inline-block;
 }
 
 .student {
-    border: 1px solid #dddddd;
+    border-top: 1px solid #bbbbbb;
     display: grid;
     grid-template-columns: 2fr 2fr 6fr 1fr;
     grid-template-rows: 1fr;
@@ -309,8 +318,21 @@ a:link, a:visited, a:active {
     border-color: #999999;
 }
 
-.student > span:not(first-of-type) {
+.student > span {
+    border-right: 1px solid #bbbbbb;
+}
+
+.student > span:first-child {
     border-left: 1px solid #dddddd;
+}
+
+.student-container > a,
+.student-container > div {
+}
+
+.student-container > a:not(first-child) > div > .field,
+.student-container > div:not(first-child) > .field {
+    border-bottom: none;
 }
 
 .heading {
@@ -327,4 +349,19 @@ a:link, a:visited, a:active {
 
 .field.red {
     background-color: #FFF0F0;
+}
+
+.student.gray {
+    color: #bbbbbb;
+    /* border-color: #eeeeee !important; */
+    transition: none !important;
+    cursor: default;
+}
+
+.student.gray > .field {
+    border-color: #eeeeee !important;
+}
+
+.student.gray:hover {
+    border-color: inherit;
 }
