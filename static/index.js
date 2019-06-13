@@ -35,6 +35,7 @@ const override = getElement('override');
 const finalMark = getElement('mark-final');
 
 const submit = getElement('submit');
+const message = getElement('message');
 
 const commentPreview = getElement('commentPreview');
 
@@ -186,6 +187,7 @@ function sendToServer(sid, rubric, comment, grade) {
         mark: grade
     }));
     console.log("sent");
+    message.innerHTML='Saved';
 }
 
 // Alex: 450157028
@@ -193,6 +195,7 @@ function sendToServer(sid, rubric, comment, grade) {
 // Daisuke
 function sendMarkToCanvas() {
     console.log("sending...");
+    message.innerHTML='Submitting';
     console.log(markA.value)
     console.log(markB.value)
     console.log(markC.value)
